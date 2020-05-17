@@ -1,12 +1,10 @@
 package de.patrickable.melderhelfer
 
 import android.Manifest
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -16,7 +14,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.BROADCAST_SMS
         )
 
-        const val TAG = "MainActivity";
+        const val TAG = "MainActivity"
         const val SMS_PERMISSION_REQUEST_CODE = 0
     }
 
