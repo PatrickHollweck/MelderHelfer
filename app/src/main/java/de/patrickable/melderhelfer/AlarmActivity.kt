@@ -3,6 +3,7 @@ package de.patrickable.melderhelfer
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import de.patrickable.melderhelfer.core.Settings
 import de.patrickable.melderhelfer.core.models.AlarmSMS
 import de.patrickable.melderhelfer.core.parsers.AlarmSMSParser
 import de.patrickable.melderhelfer.core.util.EasyTextToSpeach
@@ -52,10 +54,9 @@ class AlarmActivity : AppCompatActivity() {
         textAlarmContent.text = alarmContent
 
         try {
-            val parsed = AlarmSMSParser.parseMessage(alarmContent)
-            this.parsedAlarm = parsed
+            this.parsedAlarm = AlarmSMSParser.parseMessage(alarmContent)
 
-            textToSpeechAlarm()
+            playAlarmSounds()
         } catch (e: Exception) {
             Log.e(TAG, "Alarm parse exception", e)
         }
@@ -72,17 +73,15 @@ class AlarmActivity : AppCompatActivity() {
             return
         }
 
-        val groupID = "xxx";
-
-        val startMapsIntent = Intent(
+        val startWhatsappIntent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://chat.whatsapp.com/$groupID")
+            Uri.parse(Settings.getWhatsappGroupLink(this))
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
             setPackage(packageName)
         }
 
-        ContextCompat.startActivity(this, startMapsIntent, null)
+        ContextCompat.startActivity(this, startWhatsappIntent, null)
     }
 
     private fun startGoogleMaps(address: String) {
@@ -118,18 +117,31 @@ class AlarmActivity : AppCompatActivity() {
         }
     }
 
-    private fun textToSpeechAlarm() {
-        parsedAlarm.let {
-            val ttsText = "SMS ALARM ..H..V..O... ${parsedAlarm?.dispatchType} .... ${parsedAlarm?.shortCodeword()} ... ${parsedAlarm?.address}"
-
-            speak(ttsText)
-            Handler().postDelayed({
-                speak(ttsText)
-            }, 15000)
+    private fun playAlarmSounds() {
+        if (Settings.getIsMute(this)) {
+            return
         }
-    }
 
-    private fun speak(message: String) {
-        EasyTextToSpeach.say(this, message)
+        try {
+            EasyTextToSpeach.unMuteSounds(this)
+
+            val mediaPlayer = MediaPlayer.create(this, R.raw.pieper)
+
+            mediaPlayer.setOnCompletionListener {
+                parsedAlarm.let {
+                    val ttsText = "SMS ALARM ..H..V..O... ${parsedAlarm?.dispatchType} .... ${parsedAlarm?.shortCodeword()} ... ${parsedAlarm?.address}"
+
+                    EasyTextToSpeach.say(this, ttsText)
+                    Handler().postDelayed({
+                        EasyTextToSpeach.say(this, ttsText)
+                    }, 15000)
+                }
+            }
+
+            mediaPlayer.start()
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to play alarm sound", e)
+        }
     }
 }

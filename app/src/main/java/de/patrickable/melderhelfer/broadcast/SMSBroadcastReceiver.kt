@@ -7,6 +7,7 @@ import android.provider.Telephony
 import androidx.core.content.ContextCompat.startActivity
 
 import de.patrickable.melderhelfer.AlarmActivity
+import de.patrickable.melderhelfer.core.Settings
 
 class SMSBroadcastReceiver : BroadcastReceiver()
 {
@@ -21,14 +22,16 @@ class SMSBroadcastReceiver : BroadcastReceiver()
             return
         }
 
-        // TODO: Check the phone number if it matches the "watches" numbers
-
         for (message in messages) {
+            if (Settings.getPhoneNumber(context) != message.displayOriginatingAddress) {
+                return
+            }
+
             startActivity(
                 context,
                 Intent(context, AlarmActivity::class.java).apply {
                     putExtra(AlarmActivity.EXTRA_ALARM_CONTENT, message.displayMessageBody)
-                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 },
                 null
             )

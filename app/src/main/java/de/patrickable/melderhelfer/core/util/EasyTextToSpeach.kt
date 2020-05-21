@@ -13,11 +13,10 @@ class EasyTextToSpeach(
 ) : TextToSpeech.OnInitListener {
     companion object {
         fun say(activity: Activity, message: String) {
-            unMuteSound(activity)
             EasyTextToSpeach(activity, message)
         }
 
-        private fun unMuteSound(activity: Activity) {
+        fun unMuteSounds(activity: Activity) {
             val audioService = activity.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
             audioService.adjustStreamVolume(
@@ -41,11 +40,11 @@ class EasyTextToSpeach(
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = setLocale(
-                listOf(Locale.GERMANY, Locale.ENGLISH, Locale.US)
+                listOf(Locale.GERMANY, Locale.GERMAN, Locale.ENGLISH, Locale.US)
             )
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(activity, "Could not activated Text-To-Speech", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Could not activate Text-To-Speech (Install language packets!)", Toast.LENGTH_SHORT).show()
             } else {
                 tts.setSpeechRate(0.8f)
                 tts.speak(message, TextToSpeech.QUEUE_FLUSH, null, null)

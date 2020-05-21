@@ -2,6 +2,10 @@
     <string name="app_name">MelderHelfer</string>
     <string name="incomming_alert">Eingehender SMS Alarm</string>
     <string name="goto_address">Navigation starten</string>
-    <string name="target_phone_input" >Ziel-Telefon Nummer</string>
+    <string name="target_phone_input" >ILS-Telefon Nummer</string>
     <string name="start_whatsapp" >Whatsapp starten</string>
+    <string name="save">Speichern</string>
+    <string name="whatsapp_input">Whatsapp Gruppen link</string>
+    <string name="label_mute">Stumschalten</string>
+    <string name="sample_alarm">Probe Alarm auslösen</string>
 </resources>
