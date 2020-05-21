@@ -36,6 +36,12 @@ class AlarmSMSParser {
 
         if (addressLike.count() > 0) {
             val address = addressLike.joinToString(" ") { it.content }
+            val optimizedAddress = optimizeAddress(address)
+
+            if (optimizedAddress.isNotEmpty()) {
+                alarm.address = optimizedAddress
+            }
+
             val nextLine = lines.getOrNull(addressLike.last().index + 1)
 
             if (
@@ -45,8 +51,6 @@ class AlarmSMSParser {
             ) {
                 alarm.addressObjectName = nextLine.content
             }
-
-            alarm.address = optimizeAddress(address)
         }
 
         val codewordLike = lines.filter {
@@ -55,11 +59,19 @@ class AlarmSMSParser {
 
         if (codewordLike.count() > 0) {
             val codeword = codewordLike.joinToString(" ") { it.content }
+            val optimizedCodeword = optimizeCodeword(codeword)
 
-            alarm.codeword = optimizeCodeword(codeword)
+            if (optimizedCodeword.isNotEmpty()) {
+                alarm.codeword = optimizedCodeword
+            }
 
             val nextLine = lines.getOrNull(codewordLike.last().index + 1)
-            if (nextLine !== null) {
+
+            if (
+                nextLine !== null
+                && !isAddressLike(nextLine.content)
+                && !isCodewordLike(nextLine.content)
+            ) {
                 alarm.dispatchType = nextLine.content
             }
         }
@@ -80,7 +92,10 @@ class AlarmSMSParser {
     }
 
     private fun isCodewordLike(input: String): Boolean {
-        return input.startsWith(CODEWORD_PREFIX)
+        return (
+            input.startsWith(CODEWORD_PREFIX)
+            || input.matches(Regex("""#\w(\d+)(#(.+))(#(.+))+"""))
+        )
     }
 
     /**
