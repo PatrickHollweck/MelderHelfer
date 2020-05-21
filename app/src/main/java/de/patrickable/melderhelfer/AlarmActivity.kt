@@ -73,15 +73,27 @@ class AlarmActivity : AppCompatActivity() {
             return
         }
 
-        val startWhatsappIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse(Settings.getWhatsappGroupLink(this))
-        ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            setPackage(packageName)
-        }
+        val whatsappGroupLink = Settings.getWhatsappGroupLink(this)
 
-        ContextCompat.startActivity(this, startWhatsappIntent, null)
+        if (whatsappGroupLink.isEmpty()) {
+            ContextCompat.startActivity(
+                this,
+                packageManager.getLaunchIntentForPackage(packageName)!!,
+                null
+            )
+        } else {
+            ContextCompat.startActivity(
+                this,
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(Settings.getWhatsappGroupLink(this))
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    setPackage(packageName)
+                },
+                null
+            )
+        }
     }
 
     private fun startGoogleMaps(address: String) {
