@@ -1,10 +1,13 @@
 package de.patrickable.melderhelfer
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import de.patrickable.melderhelfer.core.models.AlarmSMS
@@ -32,6 +35,10 @@ class AlarmActivity : AppCompatActivity() {
             updateAlarm(rawAlarmContent)
         }
 
+        buttonStartWhatsapp.setOnClickListener() {
+            startWhatsapp()
+        }
+
         buttonStartMaps.setOnClickListener() {
             if (parsedAlarm?.address != null) {
                 startGoogleMaps(parsedAlarm!!.address as String)
@@ -54,9 +61,42 @@ class AlarmActivity : AppCompatActivity() {
         }
     }
 
+    private fun startWhatsapp() {
+        val packageName = "com.whatsapp"
+
+        if (!isPackageInstalled(packageName, this)) {
+            Toast
+                .makeText(this, "Whatsapp is not installed!", Toast.LENGTH_SHORT)
+                .show()
+
+            return
+        }
+
+        val groupID = "xxx";
+
+        val startMapsIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://chat.whatsapp.com/$groupID")
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            setPackage(packageName)
+        }
+
+        ContextCompat.startActivity(this, startMapsIntent, null)
+    }
+
     private fun startGoogleMaps(address: String) {
         val navigationTarget = Uri.encode(address)
+        val packageName = "com.google.android.apps.maps"
         val intentTarget = Uri.parse("google.navigation:q=${navigationTarget}")
+
+        if (!isPackageInstalled(packageName, this)) {
+            Toast
+                .makeText(this, "Google maps is not installed!", Toast.LENGTH_SHORT)
+                .show()
+
+            return
+        }
 
         val startMapsIntent = Intent(
             Intent.ACTION_VIEW,
@@ -67,6 +107,15 @@ class AlarmActivity : AppCompatActivity() {
         }
 
         ContextCompat.startActivity(this, startMapsIntent, null)
+    }
+
+    private fun isPackageInstalled(packageName: String, context: Context): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
     private fun textToSpeechAlarm() {
