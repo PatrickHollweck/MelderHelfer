@@ -29,4 +29,19 @@ data class AlarmSMS(
             "Type: $dispatchType"
         ).joinToString("\n")
     }
+
+    fun shortCodeword(): String {
+        if (codeword == null) {
+            return ""
+        }
+
+        val secondHashtagIndex = codeword!!
+            .substring(1)
+            .indexOfFirst { it == '#' }
+
+        return codeword!!
+            .substring(secondHashtagIndex + 1)
+            .replace("/", " ")
+            .replace("#", "")
+    }
 }

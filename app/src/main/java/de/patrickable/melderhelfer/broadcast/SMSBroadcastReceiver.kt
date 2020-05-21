@@ -3,13 +3,10 @@ package de.patrickable.melderhelfer.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import android.provider.Telephony
 import androidx.core.content.ContextCompat.startActivity
 
-import de.patrickable.melderhelfer.core.parsers.AlarmSMSParser
-
+import de.patrickable.melderhelfer.AlarmActivity
 
 class SMSBroadcastReceiver : BroadcastReceiver()
 {
@@ -20,31 +17,21 @@ class SMSBroadcastReceiver : BroadcastReceiver()
     override fun onReceive(context: Context?, intent: Intent?) {
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
 
+        if (context == null) {
+            return
+        }
+
         // TODO: Check the phone number if it matches the "watches" numbers
 
         for (message in messages) {
-            val alarm = AlarmSMSParser.parseMessage(message.displayMessageBody)
-
-            Log.i(TAG, "Alarm Received:\n$alarm")
-
-            if (alarm.address != null) {
-                startGoogleMaps(alarm.address!!, context!!)
-            }
+            startActivity(
+                context,
+                Intent(context, AlarmActivity::class.java).apply {
+                    putExtra(AlarmActivity.EXTRA_ALARM_CONTENT, message.displayMessageBody)
+                    setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+                null
+            )
         }
-    }
-
-    private fun startGoogleMaps(address: String, context: Context) {
-        val navigationTarget = Uri.encode(address)
-        val intentTarget = Uri.parse("google.navigation:q=${navigationTarget}")
-
-        val mapIntent = Intent(
-            Intent.ACTION_VIEW,
-            intentTarget
-        ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            setPackage("com.google.android.apps.maps")
-        }
-
-        startActivity(context, mapIntent, null)
     }
 }

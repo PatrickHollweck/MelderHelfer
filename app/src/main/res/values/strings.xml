@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MelderHelfer</string>
+    <string name="incomming_alert">Eingehender SMS Alarm</string>
+    <string name="goto_address">Navigation starten</string>
 </resources>
