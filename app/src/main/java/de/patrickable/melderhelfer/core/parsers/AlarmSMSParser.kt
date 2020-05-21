@@ -23,8 +23,9 @@ class AlarmSMSParser {
                 IndexedLine(index, element)
             }
 
-        val alarm = AlarmSMS()
+        val alarm = AlarmSMS(message)
 
+        // Optional time stamp at the top of the alarm
         if (isTimeLike(lines[0].content)) {
             alarm.time = lines[0].content
         }
@@ -34,15 +35,15 @@ class AlarmSMSParser {
         }
 
         if (addressLike.count() > 0) {
-            val address = addressLike
-                .map { it.content }
-                .joinToString(" ")
-
+            val address = addressLike.joinToString(" ") { it.content }
             val nextLine = lines.getOrNull(addressLike.last().index + 1)
-            if (nextLine !== null) {
-                if (!isCodewordLike(nextLine.content)) {
-                    alarm.addressObjectName = nextLine.content
-                }
+
+            if (
+                nextLine !== null
+                && nextLine.content.isNotEmpty()
+                && !isCodewordLike(nextLine.content)
+            ) {
+                alarm.addressObjectName = nextLine.content
             }
 
             alarm.address = optimizeAddress(address)
@@ -53,9 +54,7 @@ class AlarmSMSParser {
         }
 
         if (codewordLike.count() > 0) {
-            val codeword = codewordLike
-                .map { it.content }
-                .joinToString(" ")
+            val codeword = codewordLike.joinToString(" ") { it.content }
 
             alarm.codeword = optimizeCodeword(codeword)
 
@@ -100,5 +99,21 @@ class AlarmSMSParser {
             .trim()
             .replace("Haus-Nr.:", "")
             .replace(",", "")
+            .replace(Regex("""\s+"""), " ")
+            .let {
+                replaceDuplicateWords(it)
+            }
+    }
+
+    private fun replaceDuplicateWords(input: String): String {
+        val matches = Regex("""([\p{L}\p{N}_]+)(\s+|\s+[-|_]\s+)\1""").findAll(input)
+
+        var result = input
+        for (match in matches) {
+            val groupValues = match.groupValues
+            result = input.replace(groupValues[0], groupValues[1])
+        }
+
+        return result
     }
 }

@@ -13,6 +13,7 @@ package de.patrickable.melderhelfer.core.models
  * """
  */
 data class AlarmSMS(
+    val raw: String,
     var time: String? = null,
     var address: String? = null,
     var addressObjectName: String? = null,

@@ -30,7 +30,6 @@ class SMSBroadcastReceiver : BroadcastReceiver()
             if (alarm.address != null) {
                 startGoogleMaps(alarm.address!!, context!!)
             }
-
         }
     }
 
