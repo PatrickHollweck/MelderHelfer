@@ -136,17 +136,18 @@ class AlarmActivity : AppCompatActivity() {
 
         try {
             EasyTextToSpeach.unMuteSounds(this)
-
             val mediaPlayer = MediaPlayer.create(this, R.raw.pieper)
 
-            mediaPlayer.setOnCompletionListener {
-                parsedAlarm.let {
-                    val ttsText = "SMS ALARM ..H..V..O... ${parsedAlarm?.dispatchType} .... ${parsedAlarm?.shortCodeword()} ... ${parsedAlarm?.address}"
+            if (!Settings.getIsTTSMuted(this)) {
+                mediaPlayer.setOnCompletionListener {
+                    parsedAlarm.let {
+                        val ttsText = "SMS ALARM ..H..V..O... ${parsedAlarm?.dispatchType} .... ${parsedAlarm?.shortCodeword()} ... ${parsedAlarm?.address}"
 
-                    EasyTextToSpeach.say(this, ttsText)
-                    Handler().postDelayed({
                         EasyTextToSpeach.say(this, ttsText)
-                    }, 15000)
+                        Handler().postDelayed({
+                            EasyTextToSpeach.say(this, ttsText)
+                        }, 15000)
+                    }
                 }
             }
 

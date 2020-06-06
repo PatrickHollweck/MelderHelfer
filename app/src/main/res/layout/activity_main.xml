@@ -49,6 +49,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_mute" />
 
+            <CheckBox
+                android:id="@+id/checkBoxTTSMute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_mute_tts" />
+
             <Button
                 android:id="@+id/buttonSave"
                 android:layout_width="match_parent"

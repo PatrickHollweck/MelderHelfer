@@ -8,4 +8,5 @@
     <string name="whatsapp_input">Whatsapp Gruppen link</string>
     <string name="label_mute">Stumschalten</string>
     <string name="sample_alarm">Probe Alarm auslösen</string>
+    <string name="label_mute_tts">\"Text To Speech\" Stummschalten</string>
 </resources>

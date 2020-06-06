@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonSave.setOnClickListener() {
             Settings.setIsMute(this, checkBoxMute.isChecked)
+            Settings.setIsTTSMuted(this, checkBoxTTSMute.isChecked)
             Settings.setPhoneNumber(this, editTargetPhoneInput.text.toString())
             Settings.setWhatsappGroupLink(this, editWhatsappGroupInput.text.toString())
 
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkBoxMute.isChecked = Settings.getIsMute(this)
+        checkBoxTTSMute.isChecked = Settings.getIsTTSMuted(this)
         editTargetPhoneInput.setText(Settings.getPhoneNumber(this))
         editWhatsappGroupInput.setText(Settings.getWhatsappGroupLink(this))
     }
