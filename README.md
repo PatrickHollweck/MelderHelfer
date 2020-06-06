@@ -4,7 +4,7 @@ Android app to help German volunteer emergency service workers with dispatch
 
 | Overview Screen | Alarm Screen |
 | :-------------: | :----------: |
-<img  src="https://raw.githubusercontent.com/PatrickHollweck/MelderHelfer/master/docs/images/App-Alarm-Screen.jpeg?raw=true" /> | <img src="https://raw.githubusercontent.com/PatrickHollweck/MelderHelfer/master/docs/images/App-Overview-Screen.jpeg?raw=true" />
+<img src="https://raw.githubusercontent.com/PatrickHollweck/MelderHelfer/master/docs/images/App-Overview-Screen.jpeg?raw=true" /> | <img  src="https://raw.githubusercontent.com/PatrickHollweck/MelderHelfer/master/docs/images/App-Alarm-Screen.jpeg?raw=true" />
 
 ## The What's and Why's
 
@@ -21,7 +21,7 @@ get a SMS that contains the information for the call that the personell was call
 ## Install
 
 This app will most likely never be release to google play.
-Which is simply because it is too specific to be usefull for a wieder audience.
+Which is simply because it is too specific to be usefull for a wider audience.
 
 There are many things in the app that just dont work for people which are not in my very specific scenario.
 Things like the alarm sms parsing are specifically tailored to my regions dispatch center. Meaning that it just
